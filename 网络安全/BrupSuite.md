@@ -178,4 +178,3 @@ Google Chrome的代理设置是打开Windows系统中的代理设置。
 所有流经Burp Proxy的消息，都会在http history记录下来，可以通过历史选项卡，查看传输的数据内容，对交互的数据进行测试和验证。同时，对于Intercept和HTTP history功能，都可以通过右击弹出菜单，发送到Burp的其他组件，如Spider、Scanner、 Repeater、Intruder、Sequencer、Decoder、Comparer、Extender，进行进一步的测试。  
 
 #### WebSockets history
-
