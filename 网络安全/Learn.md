@@ -47,7 +47,7 @@ SQL注入漏洞允许攻击者干扰应用程序对其数据库的查询。它�
 
 ## 详解
 
-### 修改一个SQL查询返回额外的结果
+### 1.修改一个SQL查询返回额外的结果
 
 有一个购物网站以不同的种类展示商品，当用户点击商品时，浏览器的URL是
 
@@ -87,7 +87,7 @@ https://insecure-website.com/products?category=Gifts'+OR+1=1--
 SELECT * FROM products WHERE category = 'Gifts' OR 1=1--' AND released = 1
 ```
 
-### 改变SQL查询语句干扰网站应用程序逻辑
+### 2.改变SQL查询语句干扰网站应用程序逻辑
 
 用户登录界面时，用户通过用户名和密码登陆。以下是可能的SQL语句
 
@@ -103,7 +103,7 @@ SELECT * FROM users WHERE username = 'administrator'--' AND password = ''
 
 该行为可直接作为管理员用户登陆。
 
-### ==UNION拼接检索不同数据库信息==
+### ==3.UNION拼接检索不同数据库信息==
 
 在网站应用程序返回SQL语句结果时，可以利用SQL注入从数据库中获取其他信息。
 
@@ -204,7 +204,7 @@ SELECT name, description FROM products WHERE category = 'Gifts' UNION SELECT use
    | PostgreSQL | `'foo'||'bar'`                                               |
    | MySQL      | `'foo' 'bar'` [Note the space between the two strings] `CONCAT('foo','bar')` |
 
-### 查看数据库信息
+### 4.查看数据库信息
 
 在确定SQL注入存在时，获取数据库信息是目标之一，便于后续操作。
 
@@ -249,6 +249,10 @@ SELECT * FROM information_schema.columns WHERE table_name = 'Users'
 ```
 
 ![image-20220114225404909](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220114225404909.png)返回表中的各列及类型
+
+### 5.盲注
+
+
 
 ## SQL注入小抄
 
