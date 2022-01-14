@@ -252,6 +252,14 @@ SELECT * FROM information_schema.columns WHERE table_name = 'Users'
 
 ### 5.盲注
 
+SQL盲注是指应用程序容易受到SQL注入的攻击，但HTTP响应不包含相关SQL查询结果或任何数据信息。
+
+对于盲注，许多注入技巧失效（如UNION)。
+
+#### 通过触发条件响应使用SQL盲注
+
+
+
 
 
 ## SQL注入小抄
