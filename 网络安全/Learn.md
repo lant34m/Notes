@@ -41,8 +41,8 @@ SQL注入漏洞允许攻击者干扰应用程序对其数据库的查询。它�
 
 - 修改一个SQL查询返回额外的结果
 - 改变SQL查询语句干扰网站应用程序逻辑
-- UNION拼接检索不同数据库信息
-- 提取罐与数据库的版本和结构的信息
+- UNION拼接检索不同数据库和表信息
+- 数据库的版本和结构的信息
 - 盲注，即查询的结果不应在网站返回的响应中
 
 ## 详解
@@ -131,6 +131,8 @@ SELECT name, description FROM products WHERE category = 'Gifts' UNION SELECT use
 - 原始查询返回了多少列
 - 原始查询的哪些列可以保存注入查询的结果
 
+#### UNION使用说明
+
 1. 确定SQL注入UNION攻击所需的列数
 
    - 使用ORDER BY语句递增，直至发生错误。
@@ -193,4 +195,30 @@ SELECT name, description FROM products WHERE category = 'Gifts' UNION SELECT use
 3. 通过SQL注入查询特定数据
    当确定了原始SQL语句查询返回的列数和类型时，可以检索特定表中的符合类型的内容
 
-4. 
+4. 检查单个列中的多个值
+   当想查询信息和列数不匹配时，使用字符串串联的格式将两个值连接在一起。
+
+5. | Oracle     | `'foo'||'bar'`                                               |
+   | :--------- | ------------------------------------------------------------ |
+   | Microsoft  | `'foo'+'bar'`                                                |
+   | PostgreSQL | `'foo'||'bar'`                                               |
+   | MySQL      | `'foo' 'bar'` [Note the space between the two strings] `CONCAT('foo','bar')` |
+
+### 查看数据库信息
+
+在确定SQL注入存在时，获取数据库信息是目标之一，便于后续操作。
+
+可以查询版本信息
+
+| Oracle     | `SELECT banner FROM v$versionSELECT version FROM v$instance` |
+| :--------- | ------------------------------------------------------------ |
+| Microsoft  | `SELECT @@version`                                           |
+| PostgreSQL | `SELECT version()`                                           |
+| MySQL      | `SELECT @@version`                                           |
+
+还可以确定存在哪些数据库表，以及包含那些列。在大多数数据库中可以执行
+
+```sql
+SELECT * FROM information_schema.tables
+```
+
