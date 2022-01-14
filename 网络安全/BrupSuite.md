@@ -10,13 +10,13 @@
 
 解压压缩包后如下：
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/12376342/1637945056474-1a18f00f-881e-454f-bde6-bb403567de41.png)
+![img](https://raw.githubusercontent.com/lant34m/pic/main/1637945056474-1a18f00f-881e-454f-bde6-bb403567de41.png)
 
 如若运行不了，建议从官网下载Burp Suite Professional v2021.9.1版本，并将burpsuite.bat、burpsuiteen.bat、burpSuite_cn.jar、BurpSuiteLoader.jar文件保留至新安装文件夹内。
 
 其中将burpsuite.bat和burpsuiten.bat文件
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/12376342/1637945401505-b61ddca1-c257-43bb-9f4d-ac87973f2d78.png)
+![img](https://raw.githubusercontent.com/lant34m/pic/main/1637945401505-b61ddca1-c257-43bb-9f4d-ac87973f2d78.png)
 
 **需要做修改：盘符改为burpsuite安装的盘符，cd后路径改为burpsuite安装路径。**
 
@@ -85,27 +85,27 @@ java burpsuite.jar
 
 因为每次打开的License均不同。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/12376342/1637948131267-6926b59e-5d22-46ab-816b-02773439da65.png)
+![img](https://raw.githubusercontent.com/lant34m/pic/main/1637948131267-6926b59e-5d22-46ab-816b-02773439da65.png)
 
 点击Run打开burpsuite本体。只能从Run处打开本体！
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/12376342/1637948372251-d1f00c3e-8223-4205-8331-36a97106ff87.png)
+![img](https://raw.githubusercontent.com/lant34m/pic/main/1637948372251-d1f00c3e-8223-4205-8331-36a97106ff87.png)
 
 输入License，点击next。以下图源自网络，因笔者已经完成破解。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/12376342/1637948587922-062a6055-d3a2-49c5-b3f4-974819753fce.png)
+![img](https://raw.githubusercontent.com/lant34m/pic/main/1637948587922-062a6055-d3a2-49c5-b3f4-974819753fce.png)
 
 选择Manual activation
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/12376342/1637948613204-c481fedf-173c-41df-9e34-1cd157d62b62.png)
+![img](https://raw.githubusercontent.com/lant34m/pic/main/1637948613204-c481fedf-173c-41df-9e34-1cd157d62b62.png)
 
 将Request粘贴至Loader对应处
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/12376342/1637948657441-08c1c472-8fef-4daa-831d-2e5e902fe6bc.png)
+![img](https://raw.githubusercontent.com/lant34m/pic/main/1637948657441-08c1c472-8fef-4daa-831d-2e5e902fe6bc.png)
 
 再将Response粘贴至本体对应处
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/12376342/1637948698124-a1992cf1-3fba-407b-854c-eeddd7b1790f.png)
+![img](https://raw.githubusercontent.com/lant34m/pic/main/1637948698124-a1992cf1-3fba-407b-854c-eeddd7b1790f.png)
 
 至此完成破解。
 
@@ -123,7 +123,7 @@ java burpsuite.jar
 
 同时注意，Intercept Cilent Requests如图默认设置。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/12376342/1637949247440-0bd8c016-2b17-4262-8ccd-125df401e417.png)
+![img](https://raw.githubusercontent.com/lant34m/pic/main/1637949247440-0bd8c016-2b17-4262-8ccd-125df401e417.png)
 
 ***在Intercept Cilent Requests处，如果把所有选项勾上，将捕获不到任何数据包***
 
@@ -131,21 +131,21 @@ java burpsuite.jar
 
 FireFox是测试常用的浏览器之一，因其强大的插件和简单的操作。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/12376342/1637947844031-6da1b29d-05b9-42c7-846d-2ad73779a8f9.png)
+![img](https://raw.githubusercontent.com/lant34m/pic/main/1637947844031-6da1b29d-05b9-42c7-846d-2ad73779a8f9.png)
 
 在设置中如图打开，新版有所不同
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/12376342/1637948987754-a7a78d8e-f46f-4bf3-a484-2eccfd83d38a.png)
+![img](https://raw.githubusercontent.com/lant34m/pic/main/1637948987754-a7a78d8e-f46f-4bf3-a484-2eccfd83d38a.png)
 
 对连接设置
 
-***注意：在不使用代理处，删去127.0.0.1、localhost和本机ip***![img](https://cdn.nlark.com/yuque/0/2021/png/12376342/1637949727991-2b50d9f6-8745-4355-ad62-3fe218eb49b7.png)
+***注意：在不使用代理处，删去127.0.0.1、localhost和本机ip***![img](https://raw.githubusercontent.com/lant34m/pic/main/1637949727991-2b50d9f6-8745-4355-ad62-3fe218eb49b7.png)
 
 #### Google Chrome
 
 Google Chrome的代理设置是打开Windows系统中的代理设置。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/12376342/1637950248508-4e6f9356-3e53-4ce7-a77c-0c5e6a0d3d84.png)
+![img](https://raw.githubusercontent.com/lant34m/pic/main/1637950248508-4e6f9356-3e53-4ce7-a77c-0c5e6a0d3d84.png)
 
 #### Microsoft Edge
 

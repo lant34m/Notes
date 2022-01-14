@@ -12,23 +12,23 @@ Zeus是一种特洛伊木马病毒，针对Windows操作系统。通常被用来
 
 从用户角度，执行可疑可执行文件后，指针发生错误，多个工具发生错误，内存地址发生错误。
 
-![image-20211231122809639](C:\Users\LanT34m\AppData\Roaming\Typora\typora-user-images\image-20211231122809639.png)
+![image-20211231122809639](https://raw.githubusercontent.com/lant34m/pic/main/image-20211231122809639.png)
 
-![image-20211231122826839](C:\Users\LanT34m\AppData\Roaming\Typora\typora-user-images\image-20211231122826839.png)
+![image-20211231122826839](https://raw.githubusercontent.com/lant34m/pic/main/image-20211231122826839.png)
 
-![image-20211231122841633](C:\Users\LanT34m\AppData\Roaming\Typora\typora-user-images\image-20211231122841633.png)
+![image-20211231122841633](https://raw.githubusercontent.com/lant34m/pic/main/image-20211231122841633.png)
 
-![image-20211231122852447](C:\Users\LanT34m\AppData\Roaming\Typora\typora-user-images\image-20211231122852447.png)
+![image-20211231122852447](https://raw.githubusercontent.com/lant34m/pic/main/image-20211231122852447.png)
 
-![image-20211231122903244](C:\Users\LanT34m\AppData\Roaming\Typora\typora-user-images\image-20211231122903244.png)
+![image-20211231122903244](https://raw.githubusercontent.com/lant34m/pic/main/image-20211231122903244.png)
 
-![image-20211231122916335](C:\Users\LanT34m\AppData\Roaming\Typora\typora-user-images\image-20211231122916335.png)
+![image-20211231122916335](https://raw.githubusercontent.com/lant34m/pic/main/image-20211231122916335.png)
 
 WerFault是Windwos操作系统自带的用于错误报告的程序。
 
 使用Zbot查杀工具查杀后
 
-![image-20211231121509909](C:\Users\LanT34m\AppData\Roaming\Typora\typora-user-images\image-20211231121509909.png)
+![image-20211231121509909](https://raw.githubusercontent.com/lant34m/pic/main/image-20211231121509909.png)
 
 可见影响因素：
 
@@ -36,9 +36,9 @@ WerFault是Windwos操作系统自带的用于错误报告的程序。
 
 2. Treads
 
-   ![image-20211231123924980](C:\Users\LanT34m\AppData\Roaming\Typora\typora-user-images\image-20211231123924980.png)
+   ![image-20211231123924980](https://raw.githubusercontent.com/lant34m/pic/main/image-20211231123924980.png)
 
-   ![image-20211231123556891](C:\Users\LanT34m\AppData\Roaming\Typora\typora-user-images\image-20211231123556891.png)
+   ![image-20211231123556891](https://raw.githubusercontent.com/lant34m/pic/main/image-20211231123556891.png)
 
    （不知道存在什么问题，他人经验时是文件大小和占用空间显示0字节、文件创建时间、修改时间、访问时间通通是空）
 

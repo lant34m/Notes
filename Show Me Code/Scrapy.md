@@ -43,7 +43,7 @@ scrapy runspider test.py -o quotes.jl
 
 该脚本从网站中抓取名言然后分页，将其放在一个文本文件中，命名为quotes.jl
 结果如图
-![image-20220103010335021](C:\Users\LanT34m\AppData\Roaming\Typora\typora-user-images\image-20220103010335021.png)
+![image-20220103010335021](https://raw.githubusercontent.com/lant34m/pic/main/image-20220103010335021.png)
 
 ### 发生了什么
 
@@ -55,17 +55,17 @@ scrapy runspider test.py -o quotes.jl
 
 运行时命令行截图
 
-![image-20220103011147510](C:\Users\LanT34m\AppData\Roaming\Typora\typora-user-images\image-20220103011147510.png)
+![image-20220103011147510](https://raw.githubusercontent.com/lant34m/pic/main/image-20220103011147510.png)
 
 ## 整体架构图
 
-![img](https://img-blog.csdnimg.cn/20200321114058862.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NrNzg0MTAxNzc3,size_16,color_FFFFFF,t_70)
+![img](https://raw.githubusercontent.com/lant34m/pic/main/20200321114058862.png)
 
 在调用下载器时，往往有一个下载器中间件，使下载速度提速。
 
 官网架构图
 
-![img](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9zczIuYmFpZHUuY29tLzZPTllzamlwMFFJWjh0eWhucS9pdC91PTE3NzI5Mjc2NjMsMjU1MjMyNjEyOCZmbT0xNzMmYXBwPTQ5JmY9SlBFRw?x-oss-process=image/format,png)
+![img](https://raw.githubusercontent.com/lant34m/pic/main/aHR0cHM6Ly9zczIuYmFpZHUuY29tLzZPTllzamlwMFFJWjh0eWhucS9pdC91PTE3NzI5Mjc2NjMsMjU1MjMyNjEyOCZmbT0xNzMmYXBwPTQ5JmY9SlBFRw)
 
 ## 生成项目
 
