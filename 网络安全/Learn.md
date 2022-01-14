@@ -131,3 +131,6 @@ SELECT name, description FROM products WHERE category = 'Gifts' UNION SELECT use
 - 原始查询返回了多少列
 - 原始查询的哪些列可以保存注入查询的结果
 
+1. 确定SQL注入UNION攻击所需的列数
+   - 
+2. 
