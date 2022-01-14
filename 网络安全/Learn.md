@@ -4,7 +4,7 @@
 
 ![image-20220113221650975](https://raw.githubusercontent.com/lant34m/pic/main/image-20220113221650975.png)
 
-![image-20220113221700751](C:\Users\LanT34m\AppData\Roaming\Typora\typora-user-images\image-20220113221700751.png)
+![image-20220113221700751](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220113221700751.png)
 
 ![image-20220113221708824](https://raw.githubusercontent.com/lant34m/pic/main/image-20220113221708824.png)
 
