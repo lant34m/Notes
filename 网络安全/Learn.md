@@ -103,5 +103,31 @@ SELECT * FROM users WHERE username = 'administrator'--' AND password = ''
 
 该行为可直接作为管理员用户登陆。
 
-### UNION拼接检索不同数据库信息
+### ==UNION拼接检索不同数据库信息==
+
+在网站应用程序返回SQL语句结果时，可以利用SQL注入从数据库中获取其他信息。
+
+使用UNION联合查询执行额外的SELECT语句
+
+```sql
+SELECT name, description FROM products WHERE category = 'Gifts'
+```
+
+执行UNION语句
+
+```sql
+SELECT name, description FROM products WHERE category = 'Gifts' UNION SELECT username, password FROM users--'
+```
+
+查询到了user表中的username和password
+
+#### 要求
+
+- 每个查询必须返回相同数量的列
+- 每列中的数据类型必须在各个查询之间兼容
+
+通常需要在构造语句前了解
+
+- 原始查询返回了多少列
+- 原始查询的哪些列可以保存注入查询的结果
 
