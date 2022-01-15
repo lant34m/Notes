@@ -81,5 +81,52 @@
 
 当满足某些可疑条件（如一定数量的登录失败）时锁定账户。服务器指示账户已锁定时，用户名可以被枚举猜解出来。
 
+#### 绕过账户锁定保护的技巧
 
+1. 构建一个足够小的密码字典，以达成不超过限制登陆次数
+2. 使用凭证登陆。由一个网站数据泄露的凭证，攻击者使用一个凭证可能登陆很多使用同样凭证方式的网站。
 
+### 用户限流
+
+在短时间内尝试登陆请求次数过多，网站可能将IP地址限制登陆。
+
+通常可以通过以下方式解封：
+
+1. 管理员手动操作
+2. 用户完成验证后解封
+
+用户限流通常比锁定账户更有效，通常情况下避免了用户名猜解和DDOS攻击。
+
+#### 例子
+
+请求如下
+
+![image-20220116021813790](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220116021813790.png)
+
+在Repeater构造如下请求即可
+
+![image-20220116021724828](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220116021724828.png)
+
+返回302登录成功
+
+![image-20220116021901587](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220116021901587.png)
+
+右键点击Show response in Browser
+
+![image-20220116021944246](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220116021944246.png)
+
+成功利用漏洞
+
+## HTTP基本认证
+
+在HTTP认证中，客户端从服务器收到一个token。token由用户名和密码连接而成，并用Base64编码进行加密。这个token由浏览器存储和管理，浏览器会自动加入后续请求的认证内。如
+
+```
+Authorization: Basic base64(username:password)
+```
+
+但这并不安全，每次请求中不断重复发送用户的token，除非网站实现了HSTS，否则可以被中间人攻击截获。
+
+其次，用户的token是完全静态的，很容易被暴力破解。
+
+同时，被CSRF跨站请求伪造攻击。
