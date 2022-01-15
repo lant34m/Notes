@@ -527,11 +527,11 @@ prestmt.executeQuery();
 
 ### 数据库内容
 
-| Oracle     | `SELECT * FROM all_tablesSELECT * FROM all_tab_columns WHERE table_name = 'TABLE-NAME-HERE'` |
+| Oracle     | `SELECT * FROM all_tables       SELECT * FROM all_tab_columns WHERE table_name = 'TABLE-NAME-HERE'` |
 | :--------- | ------------------------------------------------------------ |
-| Microsoft  | `SELECT * FROM information_schema.tablesSELECT * FROM information_schema.columns WHERE table_name = 'TABLE-NAME-HERE'` |
-| PostgreSQL | `SELECT * FROM information_schema.tablesSELECT * FROM information_schema.columns WHERE table_name = 'TABLE-NAME-HERE'` |
-| MySQL      | `SELECT * FROM information_schema.tablesSELECT * FROM information_schema.columns WHERE table_name = 'TABLE-NAME-HERE'` |
+| Microsoft  | `SELECT * FROM information_schema.tables        SELECT * FROM information_schema.columns WHERE table_name = 'TABLE-NAME-HERE'` |
+| PostgreSQL | `SELECT * FROM information_schema.tables        SELECT * FROM information_schema.columns WHERE table_name = 'TABLE-NAME-HERE'` |
+| MySQL      | `SELECT * FROM information_schema.tables        SELECT * FROM information_schema.columns WHERE table_name = 'TABLE-NAME-HERE'` |
 
 ### 条件判断
 
