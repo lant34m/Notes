@@ -117,7 +117,7 @@
 
 成功利用漏洞
 
-## HTTP基本认证
+### HTTP基本认证
 
 在HTTP认证中，客户端从服务器收到一个token。token由用户名和密码连接而成，并用Base64编码进行加密。这个token由浏览器存储和管理，浏览器会自动加入后续请求的认证内。如
 
@@ -130,3 +130,81 @@ Authorization: Basic base64(username:password)
 其次，用户的token是完全静态的，很容易被暴力破解。
 
 同时，被CSRF跨站请求伪造攻击。
+
+### 多重身份验证中的漏洞
+
+许多网站完全依赖于使用密码作为单因素验证身份，但验证生物特征不切实际，所以大多网站根据Something you know和Something you have进行双因素身份验证（2FA）。这通常需要用户输入密码和外设中的临时验证码（银行多有在使用）。
+
+攻击者可能获得密码，但另一个验证因素被破解的情况少得多。但安全性高低只取决于实施的策略是否合理，实施不合理时可能被爆破或绕过。
+
+电子邮件2FA并不属于多重身份验证，依旧只使用密码作为唯一因素验证。
+
+#### 双因素认证令牌
+
+验证码通常由用户从某种物理设备上读取。许多保密程度高、重视数据安全的网站为用户提供如RSA令牌等设备。
+
+在一些网站使用短信验证码的方式验证，但容易被截获，若用户手机卡被攻击者获得则可以欺诈网站进行登录，同时也有可能被滥用于短信轰炸。
+
+##### 如何绕过
+
+用户提示输入密码后，跳转到另一个页面输入第二重身份验证。用户在密码输入之后，可能已经存在登陆的状态。
+
+##### 例子
+
+> This lab's two-factor authentication can be bypassed. You  have already obtained a valid username and password, but do not have  access to the user's 2FA verification code. To solve the lab, access  Carlos's account page.        
+>
+> - Your credentials: `wiener:peter` 		
+> - Victim's credentials `carlos:montoya` 		
+
+![image-20220116212512515](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220116212512515.png)
+
+通过正常手段登陆自己的账号后
+
+![image-20220116212708531](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220116212708531.png)
+
+为正常登陆路径
+
+登陆其他用户账号后不进行验证直接输入路径访问链接即可
+
+#### 有逻辑缺陷的双因素验证
+
+用户在完成初步登陆后，并没有充分验证是否完成第二重验证。
+
+```
+POST /login-steps/first HTTP/1.1
+Host: vulnerable-website.com
+...
+username=carlos&password=qwerty
+```
+
+然后再第二重验证之前分配一个cookie
+
+```
+HTTP/1.1 200 OK
+Set-Cookie: account=carlos
+
+GET /login-steps/second HTTP/1.1
+Cookie: account=carlos
+```
+
+在第二重验证时，以确定访问的账户
+
+```
+POST /login-steps/second HTTP/1.1
+Host: vulnerable-website.com
+Cookie: account=carlos
+...
+verification-code=123456
+```
+
+在这种情况下，cookie可以被攻击者改变，以达到访问其他人账户的目的。
+
+```
+POST /login-steps/second HTTP/1.1
+Host: vulnerable-website.com
+Cookie: account=victim-user
+...
+verification-code=123456
+```
+
+如果攻击者通过暴力破解或其他方式获得用户的账户密码时，可以根据这个逻辑漏洞登陆到任意账户。
