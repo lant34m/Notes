@@ -146,3 +146,5 @@ U5ErkJggg==
 ![image-20220123000741930](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123000741930.png)
 
 被拒绝
+
+把上传文件改为1.php.jpg即可

