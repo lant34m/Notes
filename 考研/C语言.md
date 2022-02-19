@@ -4,7 +4,7 @@
 
 一个C程序
 
-![image-20220219175723172](C:/Users/LanT34m/AppData/Roaming/Typora/typora-user-images/image-20220219175723172.png)
+![image-20220219211849059](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220219211849059.png)
 
 ```c
 #include <stdio.h>
