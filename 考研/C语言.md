@@ -19,6 +19,22 @@ int main()
 ```
 
 1. 头文件
+   包含头文件和预处理器
+
+   - 头文件是扩展名为 **.h** 的文件，包含了 C 函数声明和宏定义，使用#include包含
+
+     ```c
+     #include <file> //用于引用系统头文件
+     #include "file" //用于引用用户头文件
+     ```
+
+   - 常用的预处理器
+
+     ```c
+     #define //定义宏
+     #define MAX_ARRAY_LENGTH 20 //可以用来定义定量
+     #include //包含头文件
+     ```
 
 2. 函数(main函数)
 
@@ -115,6 +131,8 @@ int b = a;//自动转换成int,存在精读损失
 
 ![image-20220219183107305](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220219183107305.png)
 
+![图片说明](https://raw.githubusercontent.com/lant34m/pic/main/img/334190970_1569033453348_F7A6CB412ED7F2C38470A57736E51569)
+
 ### 强制转换
 
 ```c
@@ -122,6 +140,20 @@ int b = a;//自动转换成int,存在精读损失
 (float) a;
 (int) (c+d);
 (float) 5;
+```
+
+```c
+#include <stdio.h>
+
+int main()
+{
+   int sum = 17, count = 5;
+   double mean;
+
+   mean = (double) sum / count;
+   printf("Value of mean : %f\n", mean );
+
+}
 ```
 
 ## 常量
@@ -135,6 +167,15 @@ const int  LENGTH = 10;
 ```
 
 常量通常定义为大写形式
+
+## 静态变量
+
+![image-20220219210447636](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220219210447636.png)
+
+```c
+static int a = 0;
+//上图将a定义为函数f静态变量，a并不会随着函数f的结束而销毁
+```
 
 # 运算符
 
@@ -276,6 +317,12 @@ int main()
 
 使用rewind(stdin)清空缓冲区
 
+或
+
+```c
+while((ch=getchar())!=EOF && ch!='\n') ;
+```
+
 **scanf () 混合输入,读取多种类型的数据，混合输入时每次在%c之前需要加入一个空格**
 
 ### putchar和getchar
@@ -337,15 +384,415 @@ printf () 函数可以输出各种类型 的数据，包括整型、浮点型、
 
 ![image-20220219191740844](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220219191740844.png)
 
+### if
+
+```c
+if(boolean_expression)
+{
+   /* 如果布尔表达式为真将执行的语句 */
+}
+
+#include <stdio.h>
+
+int main ()
+{
+   /* 局部变量定义 */
+   int a = 10;
+
+   /* 使用 if 语句检查布尔条件 */
+   if( a < 20 )
+   {
+       /* 如果条件为真，则输出下面的语句 */
+       printf("a 小于 20\n" );
+   }
+   printf("a 的值是 %d\n", a);
+
+   return 0;
+}
+```
+
+### if else
+
+``` c
+if(boolean_expression)
+{
+   /* 如果布尔表达式为真将执行的语句 */
+}
+else
+{
+   /* 如果布尔表达式为假将执行的语句 */
+}
+
+#include <stdio.h>
+
+int main ()
+{
+   /* 局部变量定义 */
+   int a = 100;
+
+   /* 检查布尔条件 */
+   if( a < 20 )
+   {
+       /* 如果条件为真，则输出下面的语句 */
+       printf("a 小于 20\n" );
+   }
+   else
+   {
+       /* 如果条件为假，则输出下面的语句 */
+       printf("a 大于 20\n" );
+   }
+   printf("a 的值是 %d\n", a);
+
+   return 0;
+}
+
+
+```
+
+```c
+if(boolean_expression 1)
+{
+   /* 当布尔表达式 1 为真时执行 */
+}
+else if( boolean_expression 2)
+{
+   /* 当布尔表达式 2 为真时执行 */
+}
+else if( boolean_expression 3)
+{
+   /* 当布尔表达式 3 为真时执行 */
+}
+else 
+{
+   /* 当上面条件都不为真时执行 */
+}
+
+#include <stdio.h>
+
+int main ()
+{
+   /* 局部变量定义 */
+   int a = 100;
+
+   /* 检查布尔条件 */
+   if( a == 10 )
+   {
+       /* 如果 if 条件为真，则输出下面的语句 */
+       printf("a 的值是 10\n" );
+   }
+   else if( a == 20 )
+   {
+       /* 如果 else if 条件为真，则输出下面的语句 */
+       printf("a 的值是 20\n" );
+   }
+   else if( a == 30 )
+   {
+       /* 如果 else if 条件为真，则输出下面的语句 */
+       printf("a 的值是 30\n" );
+   }
+   else
+   {
+       /* 如果上面条件都不为真，则输出下面的语句 */
+       printf("没有匹配的值\n" );
+   }
+   printf("a 的准确值是 %d\n", a );
+
+   return 0;
+}
+```
+
+### 嵌套if
+
+```c
+if( boolean_expression 1)
+{
+   /* 当布尔表达式 1 为真时执行 */
+   if(boolean_expression 2)
+   {
+      /* 当布尔表达式 2 为真时执行 */
+   }
+}
+
+#include <stdio.h>
+
+int main ()
+{
+   /* 局部变量定义 */
+   int a = 100;
+   int b = 200;
+
+   /* 检查布尔条件 */
+   if( a == 100 )
+   {
+       /* 如果条件为真，则检查下面的条件 */
+       if( b == 200 )
+       {
+          /* 如果条件为真，则输出下面的语句 */
+          printf("a 的值是 100，且 b 的值是 200\n" );
+       }
+   }
+   printf("a 的准确值是 %d\n", a );
+   printf("b 的准确值是 %d\n", b );
+
+   return 0;
+}
+```
+
+### switch
+
+```c
+switch(expression){ //expression必须是整型或枚举
+    case constant-expression  : 
+//constant-expression 必须是expression可能存在的值，且必须具有相同数据类型
+       statement(s);
+       break; /* 可选的 */ //若没有break则会一直往下执行直至break
+    case constant-expression  :
+       statement(s);
+       break; /* 可选的 */
+
+    /* 您可以有任意数量的 case 语句 */
+    default : /* 可选的 */ //为前方都不为真时执行
+       statement(s);
+}
+
+#include <stdio.h>
+
+int main ()
+{
+   /* 局部变量定义 */
+   char grade = 'B';
+
+   switch(grade)
+   {
+   case 'A' :
+      printf("很棒！\n" );
+      break;
+   case 'B' :
+   case 'C' :
+      printf("做得好\n" );
+      break;
+   case 'D' :
+      printf("您通过了\n" );
+      break;
+   case 'F' :
+      printf("最好再试一下\n" );
+      break;
+   default :
+      printf("无效的成绩\n" );
+   }
+   printf("您的成绩是 %c\n", grade );
+
+   return 0;
+}
+```
+
+### 嵌套switch
+
+```c
+switch(ch1) {
+   case 'A': 
+      printf("这个 A 是外部 switch 的一部分" );
+      switch(ch2) {
+         case 'A':
+            printf("这个 A 是内部 switch 的一部分" );
+            break;
+         case 'B': /* 内部 B case 代码 */
+      }
+      break;
+   case 'B': /* 外部 B case 代码 */
+}
+```
+
 ## 循环
 
 ![image-20220219191936361](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220219191936361.png)
+
+### while
+
+```c
+while(condition)
+{
+   statement(s);
+}
+
+#include <stdio.h>
+
+int main ()
+{
+   /* 局部变量定义 */
+   int a = 10;
+
+   /* while 循环执行 */
+   while( a < 20 )
+   {
+      printf("a 的值： %d\n", a);
+      a++;
+   }
+
+   return 0;
+}
+```
+
+> while 语句中出现死循环的原因
+>
+> - 1、 `while（）`后面加了分号
+> - 2、 while语句体内没有让表达式趋近于假的操作
+
+### for
+
+```c
+for ( init; condition; increment )
+{
+   statement(s);
+}
+
+#include <stdio.h>
+
+int main ()
+{
+   /* for 循环执行 */
+   for( int a = 10; a < 20; a = a + 1 )
+   {
+      printf("a 的值： %d\n", a);
+   }
+
+   return 0;
+}
+```
+
+> for（表达式1；表达式2；表达式3）语句；
+> for循环语句的执行过程如下
+> （1）先求解表达式1。
+> （2）求解表达式2，若其值为真（值为非0），则先执行for语句中指定的内嵌语句，后执行
+> 第（3）步。若其值为假（值为0），则结束循环，转到第（5）步。
+> （3）求解表达式3.4
+> （4）转回第（2）步继续执行。
+> （5）循环结束，执行for语句下面的语句
+
+### do while
+
+do while确保运行一次
+
+```c
+do
+{
+   statement(s);
+
+} while( condition );
+
+#include <stdio.h>
+
+int main ()
+{
+   /* 局部变量定义 */
+   int a = 10;
+
+   /* do 循环执行 */
+   do
+   {
+       printf("a 的值： %d\n", a);
+       a = a + 1;
+   }while( a < 20 );
+
+   return 0;
+}
+```
+
+### 嵌套循环
+
+
 
 ### 循环控制
 
 ![image-20220219192006613](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220219192006613.png)
 
-### 无线循环
+continue **跳出本轮循环**，即为从代码后面的语句不会执行
+
+break是结束整个循环
+
+### break
+
+```c
+#include <stdio.h>
+
+int main ()
+{
+   /* 局部变量定义 */
+   int a = 10;
+
+   /* while 循环执行 */
+   while( a < 20 )
+   {
+      printf("a 的值： %d\n", a);
+      a++;
+      if( a > 15)
+      {
+         /* 使用 break 语句终止循环 */
+          break;
+      }
+   }
+
+   return 0;
+}
+```
+
+### continue
+
+```c
+#include <stdio.h>
+
+int main ()
+{
+   /* 局部变量定义 */
+   int a = 10;
+
+   /* do 循环执行 */
+   do
+   {
+      if( a == 15)
+      {
+         /* 跳过迭代 */
+         a = a + 1;
+         continue;
+      }
+      printf("a 的值： %d\n", a);
+      a++;
+
+   }while( a < 20 );
+
+   return 0;
+}
+```
+
+### （不常用）goto
+
+```c
+#include <stdio.h>
+
+int main ()
+{
+   /* 局部变量定义 */
+   int a = 10;
+
+   /* do 循环执行 */
+   LOOP:do
+   {
+      if( a == 15)
+      {
+         /* 跳过迭代 */
+         a = a + 1;
+         goto LOOP;
+      }
+      printf("a 的值： %d\n", a);
+      a++;
+
+   }while( a < 20 );
+
+   return 0;
+}
+```
+
+### 无限循环
 
 ```c
 #include <stdio.h>
@@ -361,6 +808,277 @@ int main ()
     {
         printf("该循环会永远执行下去！\n");
     }
+   return 0;
+}
+```
+
+# 函数
+
+函数是一组一起执行一个任务的语句
+
+```c
+return_type function_name( parameter list )
+{
+   body of the function
+}
+```
+
+```c
+#include <stdio.h>
+
+/* 函数声明 */
+int max(int num1, int num2);
+
+int main ()
+{
+   /* 局部变量定义 */
+   int a = 100;
+   int b = 200;
+   int ret;
+
+   /* 调用函数来获取最大值 */
+   ret = max(a, b);
+
+   printf( "Max value is : %d\n", ret );
+
+   return 0;
+}
+
+/* 函数返回两个数中较大的那个数 */
+int max(int num1, int num2) 
+{
+   /* 局部变量声明 */
+   int result;
+
+   if (num1 > num2)
+      result = num1;
+   else
+      result = num2;
+
+   return result; 
+}
+```
+
+## 传值
+
+传值 void swap(int x, int y) 不改变真正转入的值
+
+```c
+#include <stdio.h>
+
+/* 函数声明 */
+void swap(int x, int y)
+{
+   int temp;
+
+   temp = x; /* 保存 x 的值 */
+   x = y;    /* 把 y 赋值给 x */
+   y = temp; /* 把 temp 赋值给 y */
+
+   return;
+}
+
+int main ()
+{
+   /* 局部变量定义 */
+   int a = 100;
+   int b = 200;
+
+   printf("交换前，a 的值： %d\n", a );
+   printf("交换前，b 的值： %d\n", b );
+
+   /* 调用函数来交换值 */
+   swap(a, b);
+
+   printf("交换后，a 的值： %d\n", a );
+   printf("交换后，b 的值： %d\n", b );
+
+   return 0;
+}
+```
+
+## 引用
+
+可以使用void swap(int &x, int &y)
+
+```c
+#include <stdio.h>
+
+/* 函数声明 */
+void swap(int *x, int *y);
+
+int main ()
+{
+   /* 局部变量定义 */
+   int a = 100;
+   int b = 200;
+
+   printf("交换前，a 的值： %d\n", a );
+   printf("交换前，b 的值： %d\n", b );
+
+   /* 调用函数来交换值
+    * &a 表示指向 a 的指针，即变量 a 的地址 
+    * &b 表示指向 b 的指针，即变量 b 的地址 
+   */
+   swap(&a, &b);
+
+   printf("交换后，a 的值： %d\n", a );
+   printf("交换后，b 的值： %d\n", b );
+
+   return 0;
+}
+```
+
+# 作用域
+
+1. 在函数或块内部的**局部**变量
+2. 在所有函数外部的**全局**变量
+3. 在**形式**参数的函数参数定义中
+
+## 局部
+
+ ![image-20220219205110525](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220219205110525.png)
+
+![image-20220219205121577](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220219205121577.png)
+
+![image-20220219205140901](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220219205140901.png)
+
+```c
+#include <stdio.h>
+
+int main ()
+{
+  /* 局部变量声明 */
+  int a, b;
+  int c;
+
+  /* 实际初始化 */
+  a = 10;
+  b = 20;
+  c = a + b;
+
+  printf ("value of a = %d, b = %d and c = %d\n", a, b, c);
+
+  return 0;
+}
+```
+
+## 全局
+
+![image-20220219205156485](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220219205156485.png)
+
+![image-20220219205214741](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220219205214741.png)
+
+```c
+#include <stdio.h>
+
+/* 全局变量声明 */
+int g;
+
+int main ()
+{
+  /* 局部变量声明 */
+  int a, b;
+
+  /* 实际初始化 */
+  a = 10;
+  b = 20;
+  g = a + b;
+
+  printf ("value of a = %d, b = %d and g = %d\n", a, b, g);
+
+  return 0;
+}
+```
+
+```c
+#include <stdio.h>
+
+/* 全局变量声明 */
+int g = 20;
+
+int main ()
+{
+  /* 局部变量声明 */
+  int g = 10;
+
+  printf ("value of g = %d\n",  g);
+
+  return 0;
+}
+```
+
+## 形式参数
+
+```c
+#include <stdio.h>
+
+/* 全局变量声明 */
+int a = 20;
+
+int main ()
+{
+  /* 在主函数中的局部变量声明 */
+  int a = 10;
+  int b = 20;
+  int c = 0;
+  int sum(int, int);
+
+  printf ("value of a in main() = %d\n",  a);
+  c = sum( a, b);
+  printf ("value of c in main() = %d\n",  c);
+
+  return 0;
+}
+
+/* 添加两个整数的函数 */
+int sum(int a, int b)
+{
+    printf ("value of a in sum() = %d\n",  a);
+    printf ("value of b in sum() = %d\n",  b);
+
+    return a + b;
+}
+```
+
+
+
+# 数组
+
+```c
+类型说明符 数组名 [常量表达式3] ;   
+type arrayName [ arraySize ];
+int a[10]; 
+它可以存储一个固定大小的相同类型元素的顺序集合
+double balance[5] = {1000.0, 2.0, 3.4, 7.0, 50.0};
+double balance[] = {1000.0, 2.0, 3.4, 7.0, 50.0}; //大小是初始化元素个数
+//0元素是起始位置
+```
+
+## 访问数组
+
+```c
+double salary = balance[9];
+
+#include <stdio.h>
+
+int main ()
+{
+   int n[ 10 ]; /* n 是一个包含 10 个整数的数组 */
+   int i,j;
+
+   /* 初始化数组元素 */         
+   for ( i = 0; i < 10; i++ )
+   {
+      n[ i ] = i + 100; /* 设置元素 i 为 i + 100 */
+   }
+
+   /* 输出数组中每个元素的值 */
+   for (j = 0; j < 10; j++ )
+   {
+      printf("Element[%d] = %d\n", j, n[j] );
+   }
+
    return 0;
 }
 ```
