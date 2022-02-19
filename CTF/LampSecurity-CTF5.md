@@ -92,4 +92,9 @@ dirb http://172.16.12.103
 
   ![image-20220123184230047](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123184230047.png)
 
-- 
+## events登录界面一试
+
+![image-20220123230019586](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123230019586.png)
+
+此处存在一个逻辑漏洞，当请求用户修改时，会显示出用户是否存在，可以对用户名进行暴力破解
+

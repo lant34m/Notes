@@ -184,6 +184,30 @@ sqlmap -u "http://172.16.12.102/index.html?page=blog&title=Blog&id=2" -D ehks -T
 
 用户名密码都被爆出
 
+在使用ssh尝试登陆是，kali报错
+
+```
+Unable to negotiate with 172.16.12.102 port 22: no matching key exchange method found. Their offer: diffie-hellman-group-exchange-sha1,diffie-hellman-group14-sha1,diffie-hellman-group1-sha1
+```
+
+通过查阅
+
+> [SSH 无法协商错误的解决方案 - 信息安全重要 (infosecmatter.com)](https://www.infosecmatter.com/solution-for-ssh-unable-to-negotiate-errors/)
+
+可以使用以下语句连接
+
+```
+ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 dstevens@172.16.12.102
+```
+
+![image-20220124124528239](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220124124528239.png)
+
+连接后查看用户权限
+
+![image-20220124124637066](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220124124637066.png)
+
+直接得到root权限
+
 ## 邮件页面看看有什么操作
 
 ![image-20220123023229096](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220123023229096.png)
@@ -194,7 +218,17 @@ SquirrelMail版本是1.4.17，上网搜一搜
 
 可以对其测试
 
-相关poc
+使用上述的密码即可登陆
+
+> dstevens ilike2surf
+
+![image-20220124125550931](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220124125550931.png)
+
+利用poc
+
+> https://legalhackers.com/exploits/CVE-2017-7692/SquirrelMail_RCE_exploit.sh
+
+没有利用成这个poc，如果你利用成了欢迎补充细节
 
 ## calendar页面看看有什么操作
 
