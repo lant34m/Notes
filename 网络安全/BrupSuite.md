@@ -109,9 +109,7 @@ java burpsuite.jar
 
 至此完成破解。
 
-# BurpSuite简单使用
-
-## Proxy简单使用
+## Proxy设置
 
  Burp Suite代理工具是以拦截代理的方式，拦截所有通过代理的网络流量，如客户端的请求数 据、服务器端的返回信息等。Burp Suite主要拦截http和https协议的流量，通过拦截，Burp Suite以中间人的方式，可以对客户端请求数据、服务端返回做各种处理，以达到安全评估测 试的目的。 在日常工作中，我们最常用的web客户端就是的web浏览器，我们可以通过代理的设置，做到 对web浏览器的流量拦截，并对经过Burp Suite代理的流量数据进行处理。  
 
@@ -153,28 +151,149 @@ Google Chrome的代理设置是打开Windows系统中的代理设置。
 
 ![img](https://cdn.nlark.com/yuque/0/2021/png/12376342/1637950397940-b7e4066c-0f98-4a3c-b113-e7ba14713c55.png)
 
-### 认识Proxy界面
+## 基本使用
 
-#### Intercept
+1. 在Burp中，进入 "代理">"拦截 "选项卡，并确保 "拦截 "按钮处于开启状态（如果 "拦截 "按钮处于关闭状态，则点击它来切换拦截状态）。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/12376342/1637957481468-31467720-02b7-4c59-a929-f63f012d3e05.png)
+![image-20220316221416138](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316221416138.png)
 
-1. Forward 发送
-   点击 "Forward "按钮，将请求发送到服务器。在大多数情况下，为了显示页面，浏览器会发出不止一个请求（图像等）。这个按钮方便操作每个后续的请求，然后把它转发到服务器上。当没有更多的请求需要转发时，浏览器应该已经完成了所有请求的URL的加载。
-   	**每点击一次，发送一个信息。**
-2. Drop 丢失
-   点击"Drop"按钮，将当前拦截的信息丢失，不在发送到浏览器。
+2. 在你的浏览器中，访问任何URL。浏览器将发送一个请求，但随后将被卡住，等待响应。
+   在Burp中，Proxy>Inspector。你应该看到请求被显示出来供查看和编辑。使用Inspector工具来查看分析消息的不同方式。
+   ![image-20220316221504329](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316221504329.png)
 
-1. Intercept is on/off 拦截开启/关闭
-   拦截功能是否打开，拦截所有通过Brupsuite Proxy的所有请求数据。
-   	（通过Proxy设置中操作实现）
-2. Action 对请求的操作
-    除了将当前请求的消息传递到Spider、Scanner、 Repeater、Intruder、Sequencer、Decoder、Comparer组件外，还可以做一些请求消息的修 改，如改变GET或者POST请求方式、改变请求body的编码，同时也可以改变请求消息的拦 截设置，如不再拦截此主机的消息、不再拦截此IP地址的消息、不再拦截此种文件类型的消 息、不再拦截此目录的消息，也可以指定针对此消息拦截它的服务器端返回消息。  
+3. 点击 “Forward "按钮，将请求发送到服务器上。在大多数情况下，为了显示页面，你的浏览器会发出不止一个请求（对于图像等）。看一下每个后续的请求，然后把它转发到服务器上。当没有更多的请求需要转发时，你的浏览器应该已经完成了加载你请求的URL。
+   ![image-20220316221516681](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316221516681.png)
 
-1. Open browser 打开内置浏览器
+4. 在Burp中，Proxy > Intercept上编辑请求。改变请求的第一行中的URL，请求一个不存在的URL。将该请求（以及任何后续的请求）转发给服务器，然后回到浏览器查看。尽管你的浏览器请求的URL和以前一样，你应该看到一个与正常请求不同的页面。这是因为在Burp中临时改变了发出的请求。
+   ![image-20220316221550876](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316221550876.png)
+   ![image-20220316221557244](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316221557244.png)
 
-#### HTTP history
+5. 在Burp中，进入Proxy > HTTP history标签。这包含一个所有通过代理的HTTP消息的表格。选择表中的一个项目，在消息编辑器中查看HTTP消息。如果你选择了你所修改的项目，你可以从下拉菜单中选择显示原始或编辑的请求。
+   ![image-20220316221610698](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316221610698.png)
 
-所有流经Burp Proxy的消息，都会在http history记录下来，可以通过历史选项卡，查看传输的数据内容，对交互的数据进行测试和验证。同时，对于Intercept和HTTP history功能，都可以通过右击弹出菜单，发送到Burp的其他组件，如Spider、Scanner、 Repeater、Intruder、Sequencer、Decoder、Comparer、Extender，进行进一步的测试。  
+6. 点击HTTP history中的一列标题，这将根据该列对表格的内容进行排序。再次点击同一标题，对该列进行反向排序，再点一次取消排序，按默认顺序显示项目。
+   ![image-20220316221622420](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316221622420.png)
 
-#### WebSockets history
+7. 在HTTP history表格中，点击最左边一列的单元格，从下拉菜单中选择一种颜色。这将以选定的颜色突出显示该行。
+
+   在评论栏内双击并输入Comment。你可以使用highlights和comment来标记HTTP history，识别感兴趣的项目。
+   ![image-20220316221703199](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316221703199.png)
+
+8. 在历史表的上方有一个过滤栏。点击过滤栏，显示可用的选项，以各种方式改变过滤器的设置。当HTTP history项目较多时，你可以用过滤器来隐藏某些类型的项目，以帮助找到你正在寻找的项目。
+   ![image-20220316221717684](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316221717684.png)
+
+9. 进入Proxy > Options标签，看看所有可用的选项。这些可以改变代理监听的行为，筛选过滤以确定代理拦截哪些请求和响应信息，对信息进行自动修改，或以其他方式控制代理的行为。
+   ![image-20220316221727379](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316221727379.png)
+
+10. 在历史记录中选择一个项目，并显示上下文菜单（通常，通过右键点击鼠标）。上下文菜单中的选项与其他模块进行交互。
+    ![image-20220316221736813](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316221736813.png)
+
+# 认识Proxy界面
+
+## Intercept
+
+### HTTP数据包编辑器
+
+#### HTTP数据包编辑器面板
+
+数据包编辑器在整个Burp中被用来查看和编辑HTTP请求和响应，以及WebSocket数据包。除了显示数据包本身之外，编辑器还包括大量的功能，以帮助你快速地进一步分析数据包，配合Burp的核心工作，并执行其他有用的任务。
+![image-20220316221846031](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316221846031.png)
+
+##### 数据包编辑器 
+
+HTTP请求和响应中的语法被自动着色，以突出关键的代码，如请求中的参数和响应中的HTML元素。JavaScript、JSON和CSS内容也是完全变色的。你可以在User options的HTTP Message Display中配置这种行为，并调整字体。
+
+当语法着色被启用时，编辑器也会在适当的时候显示鼠标悬停的弹出窗口，显示语法项目的解码值。对于HTTP请求，弹出窗口执行URL解码，而对于响应，则执行HTML解码。![image-20220316221906374](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316221906374.png)
+![image-20220316221956078](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316221956078.png)
+
+##### Inspector
+
+可以点击Inspector右上方的问号查看详细文档。
+
+- 快速查看和编辑HTTP和WebSocket数据包的特征。
+
+- 查看你在编辑器中选择的参数、cookies或一个子字符串的完全解码值。
+
+- 点击就可添加、删除和重新排序，而不是用Raw的HTTP语法工作。
+
+- 以其解码的形式编辑数据。
+
+- 切换用于发送单个请求的协议。
+- 使用HTTP头和伪造头，而不被数据包编辑器的HTTP/1风格语法所束缚，这有利于测试特殊的HTTP/2。
+
+![image-20220316222050493](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316222050493.png)
+
+##### 数据包视图
+
+Raw视图——在这个视图中，文本编辑器以其Raw形式显示完整的信息。文本编辑器包括各种有用的功能，包括语法分析、热键和文本搜索。你可以使用 "n "按钮来切换是否显示非打印字符。
+
+Pretty视图——在这个视图中，你可以访问所有与Raw视图相同的功能。关键的区别是，文本编辑器的Pretty显示功能被启用。这大大改善了HTTP数据包中的数据、标记和代码的可读性，以标准化的缩进和换行来显示它们。
+
+十六进制视图——该视图在十六进制编辑器中以原始形式显示信息。它将信息排列成16个字节的行，并显示每个字节的十六进制值。你可以在十六进制视图中编辑信息，你插入的任何数值都可以作为字符或以两位数的十六进制形式给出，从00到FF。例如：查看或编辑单个字符的码位、查看或插入非打印字符、插入或删除单个字节或字符串。
+
+![image-20220316222217737](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316222217737.png)
+
+#### 数据包控制
+
+- Forward - 当你检查并编辑了信息后，点击Forward，将数据包发送到服务器或浏览器上。
+- Drop - 使用此功能丢弃数据包，使其不被转发。
+- Intercept is On/Off- 这个按钮用来切换所有拦截的开启和关闭。如果该按钮显示Intercept is on，那么数据包将被拦截或根据配置的HTTP和WebSocket数据包的拦截选项自动转发。如果按钮显示Intercept is off，那么所有的信息将被自动转发，不做拦截。
+- Action - 这显示了一个可用的下拉菜单，可以对当前显示的数据包执行操作。
+  除了将当前请求的消息传递到Spider、Scanner、 Repeater、Intruder、Sequencer、Decoder、Comparer组件外，还可以做一些请求消息的修 改，如改变GET或者POST请求方式、改变请求body的编码，同时也可以改变请求消息的拦 截设置，如不再拦截此主机的消息、不再拦截此IP地址的消息、不再拦截此种文件类型的消 息、不再拦截此目录的消息，也可以指定针对此消息拦截它的服务器端返回消息。  
+- Open Browser – 可以打开BurpSuite内部自带浏览器，其中相关代理设置已被配置好。
+- Comment - 这可以让你为特定的数据包表示，以便日后轻松识别。在Intercept中添加的评论将出现在HTTP history中的相关数据包中。
+
+![image-20220316222353912](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316222353912.png)
+
+### Action菜单
+
+#### Action具体操作
+
+你可以通过点击 “Action ”按钮来访问请求或响应的一系列上下文特定操作，亦或者，你可以右键数据包，从上下文菜单中选择一个操作。可用的操作取决于数据包的类型。
+
+- 注意
+
+该菜单还可能包括特定工具出现的额外选项(例如，在Repeater中，上下文菜单有粘贴URL作为请求和添加当前数据包到SiteMap的选项)。
+
+#### Scan / Send to
+
+你可以发送任何数据包，或数据包的选定部分，给其他Burp模块，以执行进一步的攻击或分析。在工具之间发送请求的能力构成了Burp操作的核心。
+
+![image-20220316222824338](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316222824338.png)
+
+#### Request in Browser
+
+你可以用它来在你的浏览器中渲染所选的响应，以避免Burp内置的HTML渲染器的限制。当你选择这个选项时，Burp会给一个特定的URL，你可以把它粘贴到你的浏览器中，以呈现响应。由此产生的浏览器请求由Burp提供你所选择的确切的响应（该请求不会被转发到原始的Web服务器），然而该响应是由浏览器在最初请求的URL的背景下处理的。因此，响应中的相对链接将由您的浏览器正确处理。
+
+![image-20220316222913835](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316222913835.png)
+
+#### Engagement tools
+
+你可以用它在你的浏览器中重新发出选定的请求（配置为使用当前的Burp作为其代理）。
+
+- Find references- 你可以从所有Burp的工具中搜索相关资料。
+- Dicover content- 这个功能可以帮助捕获爬取一些从可视区域或可以访问连接之外的内容。
+- Schedule task- 这个功能可以用来创建在一定时间和间隔内执行的自动化任务。
+- Genarate CSRF PoC – 这个功能可以创建在浏览器中能正常访问的HTML页面。通过生成的页面或链接可以实现CSRF攻击。
+
+![image-20220316222957039](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316222957039.png)
+
+#### Change ..
+
+- Change request method
+  对于任意请求，你可以在GET和POST之间自动切换请求方法，所有相关的参数在数据包中会重新排列。这个选项可以用来快速测试应用程序对参数位置的敏感度(即位置限制)。例如，绕过输入过滤或改变跨站脚本攻击语法格式。
+- Change body encoding
+  对于请求，你可以使用标准URL编码或将数据包以类型分为多部分。
+
+![image-20220316223038244](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220316223038244.png)
+
+#### Copy / Paste
+
+- Copy URL
+  复制当前的完整URL到剪贴板。
+
+- Copy as curl command
+  将一个可用于生成当前请求的curl命令复制到剪贴板上。
+
+- Copy to / Paste from file
+  选择一个文件并将当前信息的内容复制到该文件。可以与二进制数据包协作，当通过剪贴板复制可能会引起问题。拷贝的对象是选定的数据包内容，如果没有特指，则是整个信息。粘贴会取代选定的文本，如果没有选定，则会插入光标位置。

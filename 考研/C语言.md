@@ -382,6 +382,8 @@ printf () 函数可以输出各种类型 的数据，包括整型、浮点型、
 >
 > C 语言把任何**非零**和**非空**的值假定为 **true**，把**零**或 **null** 假定为 **false**。
 
+(condition)?(true):(fals)
+
 ![image-20220219191740844](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220219191740844.png)
 
 ### if
@@ -1080,6 +1082,308 @@ int main ()
    }
 
    return 0;
+}
+```
+
+## 指针与数组
+
+![image-20220221200203508](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220221200203508.png)
+
+s1是常量，不可被更改；s2是数组可以被更改
+
+## 指针数组
+
+![image-20220221200404493](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220221200404493.png)
+
+![image-20220221200541011](C:/Users/LanT34m/AppData/Roaming/Typora/typora-user-images/image-20220221200541011.png)
+
+
+
+# 指针
+
+## 指针与地址
+
+![image-20220221193238949](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220221193238949.png)
+
+通过&a取出a的地址，用*a
+
+> 每一个变量都有一个内存位置，每一个内存位置都定义了可使用连字号（&）运算符访问的地址，它表示了在内存中的一个地址。
+
+```c
+#include <stdio.h>
+ 
+int main ()
+{
+   int  var1;
+   char var2[10];
+ 
+   printf("var1 变量的地址： %p\n", &var1  );
+   printf("var2 变量的地址： %p\n", &var2  );
+ 
+   return 0;
+}
+```
+
+
+
+> 取地址操作符为&,也称引用，通过该操作符我们可以获取一个变量的地址值；取值操作符为*,也称解引用，通过该操作符我们可以得到一个地址对应的数据。如下图所示，我们通过&i获取整型变量i的地址值，然后对整型指针变量p进行初始化，p中存储的是整型变量i的地址值，所以通过第12行的*p就可以获取整型变量i的值。P中存储的是一个绝对地址值，那为什么取值时会获取4字节大小的空间呢？这是因为p为整型变量指针，每个int型数据占用4字节大小的空间，所以p在解引用时会访问4字节大小的空间，同时以整型值对内存进行解析。
+
+![image-20220221201104969](https://raw.githubusercontent.com/lant34m/pic/main/img/image-20220221201104969.png)
+
+
+
+## 指针
+
+未指定指针指向时，初始化为NULL
+
+```c
+type *var-name;
+```
+
+### 使用
+
+```c
+#include <stdio.h>
+
+int main ()
+{
+   int  var = 20;   /* 实际变量的声明 */
+   int  *ip;        /* 指针变量的声明 */
+
+   ip = &var;  /* 在指针变量中存储 var 的地址 */
+
+   printf("Address of var variable: %p\n", &var  );
+
+   /* 在指针变量中存储的地址 */
+   printf("Address stored in ip variable: %p\n", ip );
+
+   /* 使用指针访问值 */
+   printf("Value of *ip variable: %d\n", *ip );
+
+   return 0;
+}
+```
+
+### 递增递减
+
+```c
+#include <stdio.h>
+
+const int MAX = 3;
+
+int main ()
+{
+   int  var[] = {10, 100, 200};
+   int  i, *ptr;
+
+   /* 指针中的数组地址 */
+   ptr = var;
+   for ( i = 0; i < MAX; i++)
+   {
+
+      printf("存储地址：var[%d] = %x\n", i, ptr );
+      printf("存储值：var[%d] = %d\n", i, *ptr );
+
+      /* 移动到下一个位置 */
+      ptr++;
+   }
+   return 0;
+}
+```
+
+```c
+#include <stdio.h>
+
+const int MAX = 3;
+
+int main ()
+{
+   int  var[] = {10, 100, 200};
+   int  i, *ptr;
+
+   /* 指针中最后一个元素的地址 */
+   ptr = &var[MAX-1];
+   for ( i = MAX; i > 0; i--)
+   {
+
+      printf("存储地址：var[%d] = %x\n", i-1, ptr );
+      printf("存储值：var[%d] = %d\n", i-1, *ptr );
+
+      /* 移动到下一个位置 */
+      ptr--;
+   }
+   return 0;
+}
+```
+
+### 比较
+
+```c
+#include <stdio.h>
+
+const int MAX = 3;
+
+int main ()
+{
+   int  var[] = {10, 100, 200};
+   int  i, *ptr;
+
+   /* 指针中第一个元素的地址 */
+   ptr = var;
+   i = 0;
+   while ( ptr <= &var[MAX - 1] )
+   {
+
+      printf("Address of var[%d] = %x\n", i, ptr );
+      printf("Value of var[%d] = %d\n", i, *ptr );
+
+      /* 指向上一个位置 */
+      ptr++;
+      i++;
+   }
+   return 0;
+}
+```
+
+## 指针和函数
+
+```c
+#include <stdio.h>
+#include <time.h>
+
+void getSeconds(unsigned long *par);
+
+int main ()
+{
+   unsigned long sec;
+
+
+   getSeconds( &sec );
+
+   /* 输出实际值 */
+   printf("Number of seconds: %ld\n", sec );
+
+   return 0;
+}
+
+void getSeconds(unsigned long *par)
+{
+   /* 获取当前的秒数 */
+   *par = time( NULL );
+   return;
+}
+```
+
+![image-20220221194916261](C:/Users/LanT34m/AppData/Roaming/Typora/typora-user-images/image-20220221194916261.png)
+
+```c
+#include <stdio.h>
+
+/* 函数声明 */
+double getAverage(int *arr, int size);
+
+int main ()
+{
+   /* 带有 5 个元素的整型数组  */
+   int balance[5] = {1000, 2, 3, 17, 50};
+   double avg;
+
+   /* 传递一个指向数组的指针作为参数 */
+   avg = getAverage( balance, 5 ) ;
+
+   /* 输出返回值  */
+   printf("Average value is: %f\n", avg );
+
+   return 0;
+}
+
+double getAverage(int *arr, int size)
+{
+  int    i, sum = 0;       
+  double avg;          
+
+  for (i = 0; i < size; ++i)
+  {
+    sum += arr[i];
+  }
+
+  avg = (double)sum / size;
+
+  return avg;
+}
+```
+
+### 从函数返回指针
+
+```c
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h> 
+
+/* 要生成和返回随机数的函数 */
+int * getRandom( )
+{
+   static int  r[10];
+   int i;
+
+   /* 设置种子 */
+   srand( (unsigned)time( NULL ) );
+   for ( i = 0; i < 10; ++i)
+   {
+      r[i] = rand();
+      printf("%d\n", r[i] );
+   }
+
+   return r;
+}
+
+/* 要调用上面定义函数的主函数 */
+int main ()
+{
+   /* 一个指向整数的指针 */
+   int *p;
+   int i;
+
+   p = getRandom();
+   for ( i = 0; i < 10; i++ )
+   {
+       printf("*(p + [%d]) : %d\n", i, *(p + i) );
+   }
+
+   return 0;
+}
+```
+
+**C 语言不支持在调用函数时返回局部变量的地址，除非定义局部变量为static变量**
+
+### 特殊用法——回调函数
+
+```c
+#include <stdlib.h>  
+#include <stdio.h>
+
+// 回调函数
+void populate_array(int *array, size_t arraySize, int (*getNextValue)(void))
+{
+    for (size_t i=0; i<arraySize; i++)
+        array[i] = getNextValue();
+}
+
+// 获取随机值
+int getNextRandomValue(void)
+{
+    return rand();
+}
+
+int main(void)
+{
+    int myarray[10];
+    populate_array(myarray, 10, getNextRandomValue);
+    for(int i = 0; i < 10; i++) {
+        printf("%d ", myarray[i]);
+    }
+    printf("\n");
+    return 0;
 }
 ```
 
